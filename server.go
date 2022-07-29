@@ -64,6 +64,7 @@ func (server *Server) rpcCallback(subscribeArg *SubscribeArg) func(args ...inter
 		defer client.Close()
 		if connErr != nil {
 			fmt.Errorf("dialing: %v", connErr)
+			return
 		}
 		clientArg := new(ClientArg)
 		clientArg.Topic = subscribeArg.Topic
@@ -72,6 +73,7 @@ func (server *Server) rpcCallback(subscribeArg *SubscribeArg) func(args ...inter
 		err := client.Call(subscribeArg.ServiceMethod, clientArg, &reply)
 		if err != nil {
 			fmt.Errorf("dialing: %v", err)
+			return
 		}
 	}
 }
