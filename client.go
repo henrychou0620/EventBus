@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"net/rpc"
+	"strings"
 	"sync"
 )
 
@@ -84,7 +85,7 @@ func (client *Client) Start() error {
 		server := rpc.NewServer()
 		server.Register(service)
 		server.HandleHTTP(client.path, "/debug"+client.path)
-		l, err := net.Listen("tcp", client.address)
+		l, err := net.Listen("tcp", trimStringBeforeColon(client.address))
 		if err == nil {
 			service.wg.Add(1)
 			service.started = true
@@ -95,6 +96,14 @@ func (client *Client) Start() error {
 	}
 	return err
 }
+
+func trimStringBeforeColon(s string) string {
+      if idx := strings.Index(s, ":"); idx != -1 {
+               return s[idx:]
+       }
+       return s
+}
+
 
 // Stop - signal for the service to stop serving
 func (client *Client) Stop() {
